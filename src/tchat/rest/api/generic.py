@@ -1,15 +1,20 @@
-from flask.json import jsonify
-from tchat.rest.api import api_blueprint
+from flask.globals import request
+from tchat.rest.api import api_views
 from tchat.rest.utils import tchat_route
 
 __author__ = 'amitassaraf'
 
 
-@tchat_route(api_blueprint, '/api.test?error=<error>')
-def api_test(data, error):
-    return jsonify({
-        'ok': True,
+@tchat_route(api_views, '/api.test')
+def api_test(data):
+    error = request.args.get('error')
+    return True, {
         'args': {
-            'error': ''
+            'error': error
         }
-    })
+    }
+
+
+@tchat_route(api_views, '/')
+def index(data):
+    return True, {}

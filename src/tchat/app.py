@@ -1,13 +1,16 @@
-from tchat.rest.api import api_blueprint
+from flask.ext.compress import Compress
+from tchat.rest.api import api_views
+from settings import DEBUG
 
 __author__ = 'amitassaraf'
 
 from flask import Flask
 
 app = Flask(__name__)
+
+Compress(app)
+
+app.debug = DEBUG
 app.config.from_object('tchat.settings')
 
-app.register_blueprint(api_blueprint)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+app.register_blueprint(api_views)
