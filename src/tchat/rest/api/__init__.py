@@ -6,3 +6,4 @@ api_views = Blueprint('api', __name__)
 
 import generic
 import signup
+import experiments
