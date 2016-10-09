@@ -1,4 +1,3 @@
-from tchat.db.connector import tchat_db
 from tchat.db.models import Team, User, Lead
 from tchat.rest.api import api_views
 from tchat.rest.utils import tchat_route
@@ -8,7 +7,7 @@ __author__ = 'amitassaraf'
 
 ############## Lead ##############
 
-@tchat_route(api_views, 'signup.addLead')
+@tchat_route(api_views, '/signup.addLead')
 def add_lead(data):
     new_lead = Lead(**data)
     new_lead.save()
@@ -18,44 +17,44 @@ def add_lead(data):
 
 ############## User signup ##############
 
-@tchat_route(api_views, 'signup.checkEmail')
+@tchat_route(api_views, '/signup.checkEmail')
 def check_email(data):
-    results = tchat_db.table(Lead.table).filter({'email': data['email']}).run()
-    if len(results) > 0:
+    leads = Lead.filter(email=data['email'])
+    if len(leads) > 0:
         return False, {'error': 'taken'}
 
     return True, {'email': data['email'], 'type': 'unknown', 'auth_url': ''}
 
 
-@tchat_route(api_views, 'signup.checkUsername')
+@tchat_route(api_views, '/signup.checkUsername')
 def check_username(data):
-    results = tchat_db.table(User.table).filter({'username': data['username']}).run()
-    if len(results) > 0:
+    users = User.filter(username=data['username'])
+    if len(users) > 0:
         return False, {'error': 'taken'}
 
     return True, {}
 
 
-@tchat_route(api_views, 'signup.checkPasswordComplexity')
+@tchat_route(api_views, '/signup.checkPasswordComplexity')
 def check_password_complexity(data):
-    lead = tchat_db.table(Lead.table).get(data.pop('lead_id')).run()
-    new_user = User(lead=Lead(**lead), **data)
+    lead = Lead.get(id=data.pop('lead_id'))
+    new_user = User(lead=lead, **data)
     new_user.save()
     return True, {}
 
 
 ############## Team signup ##############
 
-@tchat_route(api_views, 'signup.checkUrl')
+@tchat_route(api_views, '/signup.checkUrl')
 def check_url(data):
-    results = tchat_db.table(Team.table).filter({'url': data['url']}).run()
-    if len(results) > 0:
+    teams = Team.filter(url=data['url'])
+    if len(teams) > 0:
         return False, {'error': 'taken'}
 
     return True, {}
 
 
-@tchat_route(api_views, 'signup.suggestUrl')
+@tchat_route(api_views, '/signup.suggestUrl')
 def suggest_url(data):
     return True, {'email': data['email'], 'available': [data['url'].lower().replace(' ', '-')],
                   'unavailable': []}
@@ -63,8 +62,8 @@ def suggest_url(data):
 
 @tchat_route(api_views, '/signup.createTeam')
 def create_team(data):
-    user = tchat_db.table(User.table).filter({'username': data['username']}).run()[0]
-    results = tchat_db.table(Team.table).filter({'url': data['url']}).run()
+    user = User.get(username=data['username'])
+    results = Team.filter(url=data['url'])
     if len(results) > 0:
         return False, {}
 
