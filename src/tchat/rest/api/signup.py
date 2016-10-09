@@ -72,7 +72,7 @@ def create_team(data):
     new_team.save()
     return True, {
         'url': '/confirmed/{0}'.format(new_team.id),  # TODO
-        'api_token': 'xoxs-87934118566-87950840930-87939742837-5ea2b31377',  # TODO
+        'api_token': 'RANDOM-NON-SLACK-TOKEN',  # TODO
         "user_id": user.id,
         "team_id": new_team.id,
         'show_invite_step': True,
