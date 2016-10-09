@@ -13,8 +13,3 @@ def api_test(data):
             'error': error
         }
     }
-
-
-@tchat_route(api_views, '/')
-def index(data):
-    return True, {}
